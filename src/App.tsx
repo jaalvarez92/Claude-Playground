@@ -23,6 +23,10 @@ export default function App() {
         {status === 'ok' && <span className="text-green-600 font-medium">connected</span>}
         {status === 'error' && <span className="text-red-500 font-medium">failed — check env vars</span>}
       </p>
+      <pre className="mt-4 text-xs text-gray-400 text-left">
+        URL: {import.meta.env.VITE_SUPABASE_URL ?? 'undefined'}{'\n'}
+        KEY: {import.meta.env.VITE_SUPABASE_ANON_KEY ? '***set***' : 'undefined'}
+      </pre>
     </div>
   )
 }
