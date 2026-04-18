@@ -7,7 +7,7 @@ export default function App() {
 
   useEffect(() => {
     supabase.from('_test_connection').select('*').limit(1).then(({ error }) => {
-      if (!error || error.code === '42P01') {
+      if (!error || error.code === '42P01' || error.code === 'PGRST205') {
         setStatus('ok')
       } else {
         setStatus('error')
