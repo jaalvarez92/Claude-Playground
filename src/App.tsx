@@ -3,11 +3,16 @@ import { supabase } from './lib/supabase'
 
 export default function App() {
   const [status, setStatus] = useState<'checking' | 'ok' | 'error'>('checking')
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   useEffect(() => {
     supabase.from('_test_connection').select('*').limit(1).then(({ error }) => {
-      // "relation does not exist" means we reached Supabase — connection is good
-      setStatus(error?.code === '42P01' || !error ? 'ok' : 'error')
+      if (!error || error.code === '42P01') {
+        setStatus('ok')
+      } else {
+        setStatus('error')
+        setErrorMsg(`code: ${error.code} — ${error.message}`)
+      }
     })
   }, [])
 
@@ -21,7 +26,7 @@ export default function App() {
         Supabase:{' '}
         {status === 'checking' && <span className="text-gray-400">checking…</span>}
         {status === 'ok' && <span className="text-green-600 font-medium">connected</span>}
-        {status === 'error' && <span className="text-red-500 font-medium">failed — check env vars</span>}
+        {status === 'error' && <span className="text-red-500 font-medium">failed — {errorMsg}</span>}
       </p>
       <pre className="mt-4 text-xs text-gray-400 text-left">
         URL: {import.meta.env.VITE_SUPABASE_URL ?? 'undefined'}{'\n'}
